@@ -97,7 +97,7 @@ public class LoginActivity extends AppCompatActivity{
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
                 showProgress(false);
-                Toast.makeText(LoginActivity.this,"Please ensure that you are connected to the internet.",Toast.LENGTH_LONG).show();
+                Toast.makeText(LoginActivity.this,getString(R.string.error_network_issue),Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -163,7 +163,6 @@ public class LoginActivity extends AppCompatActivity{
      */
     private void showProgress(final boolean show) {
         mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-
         mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 }

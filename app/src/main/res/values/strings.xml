@@ -10,9 +10,13 @@
     <string name="error_incorrect_email">This email might be incorrect</string>
     <string name="error_incorrect_password">This password might be incorrect</string>
     <string name="error_field_required">This field is required</string>
+
     <string name="status_logging_in">Logging In</string>
+    <string name="status_retrieving_listing">Retrieving Listing</string>
 
-
-    <string name="action_retrieve_listing">Listing</string>
+    <string name="action_retrieve_listing">Get Listing</string>
     <string name="action_sign_out">Sign Out</string>
+
+    <string name="error_network_issue">Please try again later</string>
+    <string name="error_invalid_token">Please sign in again</string>
 </resources>
