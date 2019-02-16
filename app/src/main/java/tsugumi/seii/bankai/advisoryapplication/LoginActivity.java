@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity{
         mEmailView = findViewById(R.id.email);
         mPasswordView = findViewById(R.id.password);
         mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mProgressView = findViewById(R.id.login_progress_page);
 
         Button mEmailSignInButton = findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -50,7 +50,7 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
-        // Listen to enter input for logging in
+        // Listen to user's input method for log in event
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -62,6 +62,9 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
+        if(LoginSharedPreference.loginSessionIsOngoing(this)){
+            logIn(LoginSharedPreference.getEmail(this),LoginSharedPreference.getPassword(this));
+        }
 
     }
 
@@ -70,7 +73,9 @@ public class LoginActivity extends AppCompatActivity{
      * @param email user email
      * @param password user password
      */
-    private void logIn(String email, String password){
+    private void logIn(final String email, final String password){
+        showProgress(true);
+
         Call<LoginResponse> call = getApiServiceInstance().login(email,password);
         call.enqueue(new Callback<LoginResponse>() {
             @Override
@@ -78,10 +83,11 @@ public class LoginActivity extends AppCompatActivity{
                 LoginResponse loginResponse = response.body();
                 Status responseStatus = loginResponse.getStatus();
 
-                showProgress(false);
                 if(response.isSuccessful() && responseStatus.isSuccessful()){
+                    LoginSharedPreference.persistLoginSession(LoginActivity.this,email,password);
                     goToMainActivity(loginResponse.getId(), loginResponse.getToken());
                 } else {
+                    showProgress(false);
                     mEmailView.setError(getString(R.string.error_incorrect_email));
                     mPasswordView.setError(getString(R.string.error_incorrect_password));
                     mPasswordView.requestFocus();
@@ -90,7 +96,6 @@ public class LoginActivity extends AppCompatActivity{
 
             @Override
             public void onFailure(Call<LoginResponse> call, Throwable t) {
-                // TODO notify users, on network failures etc
                 showProgress(false);
                 Toast.makeText(LoginActivity.this,"Please ensure that you are connected to the internet.",Toast.LENGTH_LONG).show();
             }
@@ -145,9 +150,6 @@ public class LoginActivity extends AppCompatActivity{
             // form field with an error.
             focusView.requestFocus();
         } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
             logIn(email,password);
         }
     }
@@ -160,25 +162,9 @@ public class LoginActivity extends AppCompatActivity{
      * Shows the progress UI and hides the login form.
      */
     private void showProgress(final boolean show) {
-        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
         mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            }
-        });
 
         mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        mProgressView.animate().setDuration(shortAnimTime).alpha(
-                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            }
-        });
     }
 }
 
