@@ -2,8 +2,10 @@ package tsugumi.seii.bankai.advisoryapplication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
+/**
+ * Convenient class for dealing with the SharedPreferences persistence of login session
+ */
 public class LoginSharedPreference {
     private static final String EMAIL_PREF = "EMAIL_PREF";
     private static final String PASSWORD_PREF = "PASSWORD_PREF";

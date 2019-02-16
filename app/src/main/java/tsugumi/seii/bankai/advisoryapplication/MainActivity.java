@@ -21,14 +21,14 @@ import tsugumi.seii.bankai.advisoryapplication.model.Status;
 
 import static tsugumi.seii.bankai.advisoryapplication.Utility.getApiServiceInstance;
 
+/**
+ * MainActivity allowing request for listing as well as logging out
+ */
 public class MainActivity extends AppCompatActivity {
     public static final String ID_ID = "ID_ID";
     public static final String TOKEN_ID = "TOKEN_ID";
 
     private View mProgressView;
-    private Button mSignOutButton;
-    private Button mRetrieveListingButton;
-    private RecyclerView mListingRecyclerView;
 
     private ListingAdapter mListingAdapter;
 
@@ -38,26 +38,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mProgressView = findViewById(R.id.login_progress_page);
-        mListingRecyclerView = findViewById(R.id.listing_recycler_view);
+        RecyclerView listingRecyclerView = findViewById(R.id.listing_recycler_view);
 
-        mSignOutButton = findViewById(R.id.sign_out_button);
-        mRetrieveListingButton = findViewById(R.id.retrieve_listing_button);
+        Button signOutButton = findViewById(R.id.sign_out_button);
+        Button retrieveListingButton = findViewById(R.id.retrieve_listing_button);
 
         // initially nothing is in the list as the items haven't been requested
         mListingAdapter = new ListingAdapter(new ArrayList<ListingItem>());
-        mListingRecyclerView.setAdapter(mListingAdapter);
-        mListingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        listingRecyclerView.setAdapter(mListingAdapter);
+        listingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         final String id= getIntent().getStringExtra(ID_ID);
         final String token= getIntent().getStringExtra(TOKEN_ID);
-        mRetrieveListingButton.setOnClickListener(new View.OnClickListener() {
+        retrieveListingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 retriveListing(id,token);
             }
         });
 
-        mSignOutButton.setOnClickListener(new View.OnClickListener() {
+        signOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 signOut();
@@ -66,6 +66,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Retrieve listing
+     * @param id id for api call
+     * @param token token for api call
+     */
     private void retriveListing(String id, String token){
         showProgress(true);
 
@@ -97,6 +102,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Sign out from the ongoing login session
+     */
     private void signOut(){
         LoginSharedPreference.endLoginSession(this);
         Intent intent = new Intent(this,LoginActivity.class);
@@ -106,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * Shows the progress UI and hides the login form.
+     * Show the progress UI.
      */
     private void showProgress(final boolean show) {
         mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);

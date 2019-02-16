@@ -24,7 +24,7 @@ import tsugumi.seii.bankai.advisoryapplication.model.Status;
 import static tsugumi.seii.bankai.advisoryapplication.Utility.getApiServiceInstance;
 
 /**
- * A login screen that offers login via email/password.
+ * Login screen
  */
 public class LoginActivity extends AppCompatActivity{
     private EditText mEmailView;
@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity{
             }
         });
 
+        // re log in without user's input, to get new session token
         if(LoginSharedPreference.loginSessionIsOngoing(this)){
             logIn(LoginSharedPreference.getEmail(this),LoginSharedPreference.getPassword(this));
         }
@@ -69,7 +70,7 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     /**
-     * Logs into the service to retireve id and token
+     * Logs into the service to retrieve id and token
      * @param email user email
      * @param password user password
      */
@@ -102,6 +103,11 @@ public class LoginActivity extends AppCompatActivity{
         });
     }
 
+    /**
+     * Start MainActivity
+     * @param id id for later api calls
+     * @param token token for later api calls
+     */
     private void goToMainActivity(String id, String token){
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra(MainActivity.ID_ID,id);
